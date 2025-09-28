@@ -1,4 +1,5 @@
 import random
+import time
 
 
 def split(matrix):
@@ -83,16 +84,41 @@ def naive_multiply(A, B):
 
 
 def main():
-    for n in [1, 2, 4, 8, 16, 32, 64, 128]:
+    test_sizes = [64, 128, 256, 512, 1024]
+
+    for n in test_sizes:
+        print(f"\n--- INICIANDO TESTE PARA MATRIZ DE TAMANHO {n}x{n} ---")
+
+        print(f"[{time.strftime('%H:%M:%S')}] Gerando matrizes...")
         A = generate_matrix(n)
         B = generate_matrix(n)
 
+        print(f"[{time.strftime('%H:%M:%S')}] Executando Strassen...")
+        start_strassens = time.perf_counter()
         strassens_result = strassens(A, B)
+        end_strassens = time.perf_counter()
+        total_strassens_time = end_strassens - start_strassens
+        print(f"- Tempo de execução (Strassen): {total_strassens_time:.6f} segundos")
+
+        print(f"[{time.strftime('%H:%M:%S')}] Executando Força Bruta...")
+        start_naive = time.perf_counter()
         naive_result = naive_multiply(A, B)
+        end_naive = time.perf_counter()
+        total_naive_time = end_naive - start_naive
+        print(f"- Tempo de execução (Força Bruta): {total_naive_time:.6f} segundos")
 
-        assert strassens_result == naive_result, f"Erro na matriz de tamanho {n}x{n}!"
+        print()
 
-    print("Todos os testes passaram!")
+        if total_strassens_time < total_naive_time:
+            speedup = total_naive_time / total_strassens_time
+            print(f"Strassen foi mais rápido por um fator de {speedup:.2f}x")
+        else:
+            slowdown = total_strassens_time / total_naive_time
+            print(f"Força Bruta foi mais rápido por um fator de {slowdown:.2f}x")
+
+        assert strassens_result == naive_result, (
+            f"ERRO: Os resultados não são iguais para {n}x{n}!"
+        )
 
 
 if __name__ == "__main__":

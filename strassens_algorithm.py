@@ -34,11 +34,25 @@ def join_matrices(C11, C12, C21, C22):
     return top + bottom
 
 
+def naive_multiply(A, B):
+    n = len(A)
+    C = [[0 for _ in range(n)] for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            for k in range(n):
+                C[i][j] += A[i][k] * B[k][j]
+    return C
+
+
+LEAF_SIZE = 64
+
+
 def strassens(A, B):
     n = len(A)
 
-    if n == 1:
-        return [[A[0][0] * B[0][0]]]
+    if n <= LEAF_SIZE:
+        return naive_multiply(A, B)
+
     else:
         A11, A12, A21, A22 = split(A)
         B11, B12, B21, B22 = split(B)
@@ -70,17 +84,6 @@ def strassens(A, B):
 
 def generate_matrix(n):
     return [[random.randint(1, 9) for _ in range(n)] for _ in range(n)]
-
-
-def naive_multiply(A, B):
-    n = len(A)
-    C = [[0 for _ in range(n)] for _ in range(n)]
-
-    for i in range(n):
-        for j in range(n):
-            for k in range(n):
-                C[i][j] += A[i][k] * B[k][j]
-    return C
 
 
 def main():

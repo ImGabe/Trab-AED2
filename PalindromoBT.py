@@ -40,9 +40,7 @@ def PalindromoBackingTrack(texto):
     return resultados
 
 
-# -----------------------------
-# Teste
-# -----------------------------
+
 texto = "ovo arara ana babab"
 resultado = PalindromoBackingTrack(texto)
 
